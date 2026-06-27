@@ -34,9 +34,7 @@ export default function Header() {
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
         style={{
-          background: scrolled
-            ? "rgba(15, 23, 42, 0.97)"
-            : "transparent",
+          background: scrolled ? "rgba(15, 23, 42, 0.97)" : "transparent",
           backdropFilter: scrolled ? "blur(20px)" : "none",
           borderBottom: scrolled ? "1px solid rgba(37, 99, 235, 0.15)" : "none",
         }}
@@ -74,7 +72,7 @@ export default function Header() {
               ))}
             </motion.nav>
 
-            {/* CTA */}
+            {/* CTA — más grande */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -84,8 +82,10 @@ export default function Header() {
               <a
                 href="#contacto"
                 onClick={(e) => { e.preventDefault(); handleNav("#contacto"); }}
-                className="group flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-semibold transition-all duration-300"
+                className="group flex items-center gap-2.5 rounded-lg font-semibold transition-all duration-300"
                 style={{
+                  padding: "0.75rem 1.75rem",
+                  fontSize: "0.9375rem",
                   background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
                   color: "white",
                   boxShadow: "0 4px 15px rgba(37, 99, 235, 0.3)",
@@ -100,11 +100,11 @@ export default function Header() {
                 }}
               >
                 Solicitar Cotización
-                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
               </a>
             </motion.div>
 
-            {/* Mobile menu toggle */}
+            {/* Mobile toggle */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="lg:hidden p-2 rounded-md transition-colors"
@@ -159,14 +159,16 @@ export default function Header() {
                 <a
                   href="#contacto"
                   onClick={(e) => { e.preventDefault(); handleNav("#contacto"); }}
-                  className="flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold w-full"
+                  className="flex items-center justify-center gap-2 rounded-lg font-semibold w-full"
                   style={{
+                    padding: "0.875rem 1.75rem",
+                    fontSize: "0.9375rem",
                     background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
                     color: "white",
                   }}
                 >
                   Solicitar Cotización
-                  <ArrowRight size={14} />
+                  <ArrowRight size={15} />
                 </a>
               </div>
             </div>
@@ -180,7 +182,6 @@ export default function Header() {
 function LogisenLogo() {
   return (
     <div className="flex items-center gap-3">
-      {/* Icon */}
       <div
         className="w-9 h-9 rounded-lg flex items-center justify-center"
         style={{ background: "linear-gradient(135deg, #2563EB, #1D4ED8)" }}
@@ -190,7 +191,6 @@ function LogisenLogo() {
           <path d="M19 15l3 3-3 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
-      {/* Text */}
       <div className="flex flex-col leading-tight">
         <span
           className="text-xl font-bold tracking-wide"

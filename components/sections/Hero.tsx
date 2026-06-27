@@ -22,7 +22,7 @@ export default function Hero() {
         }}
       />
 
-      {/* Multi-layer overlay for premium depth */}
+      {/* Overlay */}
       <div
         className="absolute inset-0"
         style={{
@@ -37,7 +37,7 @@ export default function Hero() {
         style={{ background: "linear-gradient(180deg, #2563EB, #1E40AF, transparent)" }}
       />
 
-      {/* Grid pattern overlay */}
+      {/* Grid pattern */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
@@ -73,7 +73,7 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Main Headline */}
+          {/* Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,7 +108,7 @@ export default function Hero() {
             operativo en cada etapa del viaje.
           </motion.p>
 
-          {/* CTAs */}
+          {/* CTAs — padding aumentado */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -117,8 +117,10 @@ export default function Hero() {
           >
             <button
               onClick={() => scrollTo("#contacto")}
-              className="group flex items-center gap-2 px-7 py-4 rounded-lg font-semibold text-base transition-all duration-300"
+              className="group flex items-center gap-2.5 rounded-lg font-semibold transition-all duration-300"
               style={{
+                padding: "1rem 2rem",
+                fontSize: "1rem",
                 background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
                 color: "white",
                 boxShadow: "0 8px 30px rgba(37, 99, 235, 0.4)",
@@ -138,8 +140,10 @@ export default function Hero() {
 
             <button
               onClick={() => scrollTo("#servicios")}
-              className="group flex items-center gap-2 px-7 py-4 rounded-lg font-semibold text-base transition-all duration-300"
+              className="group flex items-center gap-2.5 rounded-lg font-semibold transition-all duration-300"
               style={{
+                padding: "1rem 2rem",
+                fontSize: "1rem",
                 background: "rgba(255,255,255,0.05)",
                 border: "1px solid rgba(255,255,255,0.15)",
                 color: "white",

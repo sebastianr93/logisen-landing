@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { fadeUp, viewportOnce } from "@/lib/animations";
 
@@ -18,7 +19,6 @@ const CLIENTS = [
   { name: "PepsiCo", color: "#004B93" },
 ];
 
-// Duplicate for infinite scroll
 const ALL_CLIENTS = [...CLIENTS, ...CLIENTS];
 
 export default function Clientes() {
@@ -28,17 +28,27 @@ export default function Clientes() {
       className="section-py"
       style={{ background: "#0F172A" }}
     >
-      <div className="container-max">
+      {/* Header — full width, centrado correctamente */}
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="text-center mb-14"
+          style={{ textAlign: "center", maxWidth: "720px", padding: "0 1.5rem", marginBottom: "3.5rem" }}
         >
           <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase mb-6"
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "0.375rem 0.75rem",
+              borderRadius: "9999px",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              marginBottom: "1.5rem",
               background: "rgba(37, 99, 235, 0.15)",
               border: "1px solid rgba(37, 99, 235, 0.3)",
               color: "#60A5FA",
@@ -47,8 +57,14 @@ export default function Clientes() {
             Clientes
           </div>
           <h2
-            className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4"
-            style={{ fontFamily: "Manrope, sans-serif", color: "white" }}
+            style={{
+              fontFamily: "Manrope, sans-serif",
+              color: "white",
+              fontSize: "clamp(1.875rem, 4vw, 3rem)",
+              fontWeight: 800,
+              marginBottom: "1rem",
+              lineHeight: 1.15,
+            }}
           >
             Empresas que confían{" "}
             <span
@@ -62,7 +78,7 @@ export default function Clientes() {
               en nosotros
             </span>
           </h2>
-          <p className="text-base max-w-xl mx-auto" style={{ color: "#64748B" }}>
+          <p style={{ color: "#64748B", fontSize: "1rem", lineHeight: 1.6 }}>
             Acompañamos a empresas líderes que necesitan un transporte de contenedores
             serio, previsible y coordinado.
           </p>
@@ -74,56 +90,76 @@ export default function Clientes() {
         {/* Fade edges */}
         <div
           className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{
-            background: "linear-gradient(90deg, #0F172A, transparent)",
-          }}
+          style={{ background: "linear-gradient(90deg, #0F172A, transparent)" }}
         />
         <div
           className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{
-            background: "linear-gradient(-90deg, #0F172A, transparent)",
-          }}
+          style={{ background: "linear-gradient(-90deg, #0F172A, transparent)" }}
         />
 
-        {/* Track 1 */}
-        <div className="flex gap-5 marquee-track mb-5" style={{ width: "max-content" }}>
-          {ALL_CLIENTS.map((client, i) => (
-            <ClientCard key={`t1-${i}`} client={client} />
-          ))}
-        </div>
+        {/* Track 1 — pausa on hover */}
+        <Track clients={ALL_CLIENTS} trackId="t1" duration={20} reverse={false} />
 
-        {/* Track 2 — reversed */}
-        <div
-          className="flex gap-5"
-          style={{
-            width: "max-content",
-            animation: "marquee 25s linear infinite reverse",
-          }}
-        >
-          {ALL_CLIENTS.map((client, i) => (
-            <ClientCard key={`t2-${i}`} client={client} />
-          ))}
-        </div>
+        {/* Track 2 — pausa on hover, dirección inversa */}
+        <Track clients={ALL_CLIENTS} trackId="t2" duration={25} reverse={true} />
       </div>
 
-      {/* Bottom stats */}
-      <div className="container-max mt-16">
+      {/* Bottom note */}
+      <div style={{ width: "100%", display: "flex", justifyContent: "center", marginTop: "4rem" }}>
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="text-center"
+          style={{ textAlign: "center" }}
         >
-          <p className="text-sm font-medium mb-2" style={{ color: "#64748B" }}>
+          <p style={{ fontSize: "0.875rem", fontWeight: 500, color: "#64748B", marginBottom: "0.5rem" }}>
             Y muchas más empresas de primera línea
           </p>
-          <p className="text-xs" style={{ color: "#475569" }}>
+          <p style={{ fontSize: "0.75rem", color: "#475569" }}>
             Industria alimentaria · Química · Agro · Salud · Consumo masivo
           </p>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function Track({
+  clients,
+  trackId,
+  duration,
+  reverse,
+}: {
+  clients: typeof ALL_CLIENTS;
+  trackId: string;
+  duration: number;
+  reverse: boolean;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseEnter = () => {
+    if (trackRef.current) trackRef.current.style.animationPlayState = "paused";
+  };
+  const handleMouseLeave = () => {
+    if (trackRef.current) trackRef.current.style.animationPlayState = "running";
+  };
+
+  return (
+    <div
+      ref={trackRef}
+      className="flex gap-5 mb-5"
+      style={{
+        width: "max-content",
+        animation: `marquee ${duration}s linear infinite ${reverse ? "reverse" : ""}`,
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {clients.map((client, i) => (
+        <ClientCard key={`${trackId}-${i}`} client={client} />
+      ))}
+    </div>
   );
 }
 
