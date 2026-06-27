@@ -14,30 +14,18 @@ export default function Hero() {
       id="inicio"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&q=85')`,
-        }}
+        style={{ backgroundImage: `url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&q=85')` }}
       />
-
-      {/* Overlay */}
       <div
         className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.82) 50%, rgba(30,41,59,0.75) 100%)",
-        }}
+        style={{ background: "linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.82) 50%, rgba(30,41,59,0.75) 100%)" }}
       />
-
-      {/* Blue accent stripe */}
       <div
         className="absolute top-0 left-0 w-1.5 h-full"
         style={{ background: "linear-gradient(180deg, #2563EB, #1E40AF, transparent)" }}
       />
-
-      {/* Grid pattern */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
@@ -46,11 +34,10 @@ export default function Hero() {
         }}
       />
 
-      {/* Content */}
       <div className="container-max relative z-10 pt-24 pb-16">
         <div className="max-w-4xl">
 
-          {/* Eyebrow */}
+          {/* Eyebrow — padding aumentado, texto blanco, z-index explícito */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -58,16 +45,33 @@ export default function Hero() {
             className="flex items-center gap-3 mb-8"
           >
             <div
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase"
               style={{
-                background: "rgba(37, 99, 235, 0.15)",
-                border: "1px solid rgba(37, 99, 235, 0.3)",
-                color: "#60A5FA",
+                position: "relative",
+                zIndex: 10,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.625rem",
+                padding: "0.625rem 1.25rem",
+                borderRadius: "9999px",
+                fontSize: "0.7rem",
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                background: "rgba(15, 23, 42, 0.7)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                color: "white",
+                backdropFilter: "blur(8px)",
               }}
             >
               <span
-                className="w-1.5 h-1.5 rounded-full pulse-dot"
-                style={{ background: "#2563EB" }}
+                style={{
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "9999px",
+                  background: "#2563EB",
+                  flexShrink: 0,
+                  animation: "pulse-dot 2s ease-in-out infinite",
+                }}
               />
               Operador Logístico · Argentina
             </div>
@@ -108,7 +112,7 @@ export default function Hero() {
             operativo en cada etapa del viaje.
           </motion.p>
 
-          {/* CTAs — padding aumentado */}
+          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -123,6 +127,8 @@ export default function Hero() {
                 fontSize: "1rem",
                 background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
                 color: "white",
+                border: "none",
+                cursor: "pointer",
                 boxShadow: "0 8px 30px rgba(37, 99, 235, 0.4)",
               }}
               onMouseEnter={(e) => {
@@ -147,6 +153,7 @@ export default function Hero() {
                 background: "rgba(255,255,255,0.05)",
                 border: "1px solid rgba(255,255,255,0.15)",
                 color: "white",
+                cursor: "pointer",
                 backdropFilter: "blur(10px)",
               }}
               onMouseEnter={(e) => {
@@ -177,15 +184,10 @@ export default function Hero() {
               { icon: Clock, text: "+300 contenedores / mes" },
             ].map(({ icon: Icon, text }) => (
               <div key={text} className="flex items-center gap-2">
-                <div
-                  className="w-7 h-7 rounded-md flex items-center justify-center"
-                  style={{ background: "rgba(37, 99, 235, 0.2)" }}
-                >
+                <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.2)" }}>
                   <Icon size={13} style={{ color: "#60A5FA" }} />
                 </div>
-                <span className="text-sm font-medium" style={{ color: "#94A3B8" }}>
-                  {text}
-                </span>
+                <span className="text-sm font-medium" style={{ color: "#94A3B8" }}>{text}</span>
               </div>
             ))}
           </motion.div>
@@ -200,13 +202,8 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer"
         onClick={() => scrollTo("#quienes")}
       >
-        <span className="text-xs tracking-widest uppercase" style={{ color: "#475569" }}>
-          Scroll
-        </span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        >
+        <span className="text-xs tracking-widest uppercase" style={{ color: "#475569" }}>Scroll</span>
+        <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
           <ChevronDown size={18} style={{ color: "#2563EB" }} />
         </motion.div>
       </motion.div>

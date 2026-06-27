@@ -8,6 +8,23 @@ import { fadeLeft, fadeRight, viewportOnce, fadeUp } from "@/lib/animations";
 type FormState = { nombre: string; empresa: string; email: string; telefono: string; mensaje: string; };
 type Errors = Partial<Record<keyof FormState, string>>;
 
+const inputStyle = {
+  base: {
+    width: "100%",
+    padding: "0.875rem 1rem",
+    borderRadius: "0.5rem",
+    fontSize: "0.9375rem",
+    outline: "none",
+    transition: "all 0.2s ease",
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    color: "white",
+  },
+  error: {
+    border: "1px solid #EF4444",
+  },
+};
+
 export default function Contacto() {
   const [form, setForm] = useState<FormState>({ nombre: "", empresa: "", email: "", telefono: "", mensaje: "" });
   const [errors, setErrors] = useState<Errors>({});
@@ -15,17 +32,17 @@ export default function Contacto() {
   const [loading, setLoading] = useState(false);
 
   const validate = (): boolean => {
-    const newErrors: Errors = {};
-    if (!form.nombre.trim()) newErrors.nombre = "El nombre es obligatorio";
-    if (!form.empresa.trim()) newErrors.empresa = "La empresa es obligatoria";
-    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) newErrors.email = "Email inválido";
-    if (!form.mensaje.trim()) newErrors.mensaje = "El mensaje es obligatorio";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const e: Errors = {};
+    if (!form.nombre.trim()) e.nombre = "El nombre es obligatorio";
+    if (!form.empresa.trim()) e.empresa = "La empresa es obligatoria";
+    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = "Email inválido";
+    if (!form.mensaje.trim()) e.mensaje = "El mensaje es obligatorio";
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (ev: React.FormEvent) => {
+    ev.preventDefault();
     if (!validate()) return;
     setLoading(true);
     await new Promise((r) => setTimeout(r, 1500));
@@ -33,21 +50,29 @@ export default function Contacto() {
     setLoading(false);
   };
 
-  const field = (key: keyof FormState, label: string, type = "text", placeholder = "") => (
-    <div>
-      <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#64748B" }}>
-        {label}{key !== "telefono" && <span style={{ color: "#2563EB" }}> *</span>}
+  const Field = ({
+    id, label, type = "text", placeholder = "", optional = false,
+  }: { id: keyof FormState; label: string; type?: string; placeholder?: string; optional?: boolean }) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+      <label style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#64748B" }}>
+        {label}{!optional && <span style={{ color: "#2563EB" }}> *</span>}
       </label>
       <input
-        type={type} value={form[key]}
-        onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+        type={type}
+        value={form[id]}
+        onChange={(e) => setForm({ ...form, [id]: e.target.value })}
         placeholder={placeholder}
-        className="w-full px-4 py-3 rounded-lg text-sm outline-none transition-all duration-200"
-        style={{ background: "rgba(255,255,255,0.05)", border: errors[key] ? "1px solid #EF4444" : "1px solid rgba(255,255,255,0.1)", color: "white" }}
-        onFocus={(e) => { if (!errors[key]) e.target.style.borderColor = "rgba(37, 99, 235, 0.6)"; e.target.style.background = "rgba(255,255,255,0.08)"; }}
-        onBlur={(e) => { if (!errors[key]) e.target.style.borderColor = "rgba(255,255,255,0.1)"; e.target.style.background = "rgba(255,255,255,0.05)"; }}
+        style={{ ...inputStyle.base, ...(errors[id] ? inputStyle.error : {}) }}
+        onFocus={(e) => {
+          if (!errors[id]) e.target.style.borderColor = "rgba(37,99,235,0.6)";
+          e.target.style.background = "rgba(255,255,255,0.08)";
+        }}
+        onBlur={(e) => {
+          if (!errors[id]) e.target.style.borderColor = "rgba(255,255,255,0.1)";
+          e.target.style.background = "rgba(255,255,255,0.05)";
+        }}
       />
-      {errors[key] && <p className="text-xs mt-1" style={{ color: "#EF4444" }}>{errors[key]}</p>}
+      {errors[id] && <p style={{ fontSize: "0.75rem", color: "#EF4444", marginTop: "0.125rem" }}>{errors[id]}</p>}
     </div>
   );
 
@@ -55,7 +80,7 @@ export default function Contacto() {
     <section id="contacto" className="section-py" style={{ background: "#0F172A" }}>
       <div className="container-max">
 
-        {/* Header centrado */}
+        {/* Header */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
@@ -63,16 +88,13 @@ export default function Contacto() {
           viewport={viewportOnce}
           className="section-header"
         >
-          <div
-            style={{
-              display: "inline-flex", alignItems: "center", gap: "0.5rem",
-              padding: "0.375rem 0.75rem", borderRadius: "9999px",
-              fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.1em",
-              textTransform: "uppercase", marginBottom: "1.5rem",
-              background: "rgba(37, 99, 235, 0.15)",
-              border: "1px solid rgba(37, 99, 235, 0.3)", color: "#60A5FA",
-            }}
-          >
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: "0.5rem",
+            padding: "0.375rem 0.75rem", borderRadius: "9999px",
+            fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.1em",
+            textTransform: "uppercase", marginBottom: "1.5rem",
+            background: "rgba(37,99,235,0.15)", border: "1px solid rgba(37,99,235,0.3)", color: "#60A5FA",
+          }}>
             Contacto
           </div>
           <h2 style={{ fontFamily: "Manrope, sans-serif", color: "white", fontSize: "clamp(1.875rem, 4vw, 3rem)", fontWeight: 800, marginBottom: "1rem", lineHeight: 1.15 }}>
@@ -87,53 +109,54 @@ export default function Contacto() {
           </p>
         </motion.div>
 
-        {/* Grid — altura igualada con stretch */}
-        <div className="grid lg:grid-cols-5 gap-8 items-stretch">
+        {/* Grid */}
+        <div className="grid lg:grid-cols-5 gap-8 items-start">
 
-          {/* Info — columna izquierda */}
+          {/* Info */}
           <motion.div
             variants={fadeLeft}
             initial="hidden"
             whileInView="visible"
             viewport={viewportOnce}
-            className="lg:col-span-2 flex flex-col gap-5"
+            className="lg:col-span-2"
+            style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}
           >
-            {/* Person card — crece para igualar altura */}
-            <div
-              className="rounded-2xl p-7 flex-1"
-              style={{ background: "rgba(30, 41, 59, 0.5)", border: "1px solid rgba(37, 99, 235, 0.2)" }}
-            >
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold mb-5"
-                style={{ background: "linear-gradient(135deg, #2563EB, #1D4ED8)", color: "white", fontFamily: "Manrope, sans-serif" }}
-              >
+            {/* Person card */}
+            <div style={{ borderRadius: "1rem", padding: "2rem", background: "rgba(30,41,59,0.5)", border: "1px solid rgba(37,99,235,0.2)" }}>
+              <div style={{
+                width: "3.5rem", height: "3.5rem", borderRadius: "9999px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "1.25rem", fontWeight: 700, marginBottom: "1.25rem",
+                background: "linear-gradient(135deg, #2563EB, #1D4ED8)", color: "white",
+                fontFamily: "Manrope, sans-serif",
+              }}>
                 NC
               </div>
-              <h3 className="text-lg font-bold mb-1" style={{ fontFamily: "Manrope, sans-serif", color: "white" }}>
+              <h3 style={{ fontFamily: "Manrope, sans-serif", color: "white", fontSize: "1.125rem", fontWeight: 700, marginBottom: "0.25rem" }}>
                 Nicolás Centurión
               </h3>
-              <p className="text-sm mb-7" style={{ color: "#64748B" }}>
+              <p style={{ color: "#64748B", fontSize: "0.875rem", marginBottom: "1.75rem" }}>
                 Gerente de Operaciones y Nuevos Negocios
               </p>
 
-              <div className="flex flex-col gap-5">
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.125rem" }}>
                 {[
                   { icon: Phone, label: "+54 9 11 3185 4127", href: "tel:+5491131854127" },
                   { icon: Mail, label: "ncenturion@logisen.com.ar", href: "mailto:ncenturion@logisen.com.ar" },
                   { icon: Globe, label: "www.logisen.com.ar", href: "https://www.logisen.com.ar" },
                   { icon: MapPin, label: "Buenos Aires, Argentina", href: null },
                 ].map(({ icon: Icon, label, href }) => (
-                  <div key={label} className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <div style={{ width: "2.25rem", height: "2.25rem", borderRadius: "0.5rem", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, background: "rgba(37,99,235,0.15)" }}>
                       <Icon size={15} style={{ color: "#60A5FA" }} />
                     </div>
                     {href ? (
-                      <a href={href} className="text-sm transition-colors duration-200" style={{ color: "#94A3B8" }}
+                      <a href={href} style={{ fontSize: "0.9rem", color: "#94A3B8", textDecoration: "none", transition: "color 0.2s" }}
                         onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#60A5FA"; }}
                         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#94A3B8"; }}
                       >{label}</a>
                     ) : (
-                      <span className="text-sm" style={{ color: "#94A3B8" }}>{label}</span>
+                      <span style={{ fontSize: "0.9rem", color: "#94A3B8" }}>{label}</span>
                     )}
                   </div>
                 ))}
@@ -141,87 +164,111 @@ export default function Contacto() {
             </div>
 
             {/* Cobertura */}
-            <div className="rounded-2xl p-5" style={{ background: "rgba(37, 99, 235, 0.08)", border: "1px solid rgba(37, 99, 235, 0.2)" }}>
-              <p className="text-sm font-semibold mb-2" style={{ color: "#60A5FA" }}>Cobertura operativa</p>
-              <p className="text-xs leading-relaxed" style={{ color: "#64748B" }}>
+            <div style={{ borderRadius: "1rem", padding: "1.25rem 1.5rem", background: "rgba(37,99,235,0.08)", border: "1px solid rgba(37,99,235,0.2)" }}>
+              <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "#60A5FA", marginBottom: "0.5rem" }}>Cobertura operativa</p>
+              <p style={{ fontSize: "0.8125rem", color: "#64748B", lineHeight: 1.6 }}>
                 Puerto de Buenos Aires · Puerto de Zárate · Gran Buenos Aires · Interior del país bajo consulta
               </p>
             </div>
           </motion.div>
 
-          {/* Form — columna derecha, altura completa */}
+          {/* Form */}
           <motion.div
             variants={fadeRight}
             initial="hidden"
             whileInView="visible"
             viewport={viewportOnce}
-            className="lg:col-span-3 flex flex-col"
+            className="lg:col-span-3"
           >
-            <div
-              className="rounded-2xl p-8 flex-1 flex flex-col"
-              style={{ background: "rgba(30, 41, 59, 0.4)", border: "1px solid rgba(255,255,255,0.06)" }}
-            >
+            <div style={{ borderRadius: "1rem", padding: "2.5rem", background: "rgba(30,41,59,0.4)", border: "1px solid rgba(255,255,255,0.06)" }}>
               {submitted ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
+                <div style={{ textAlign: "center", padding: "4rem 0" }}>
+                  <div style={{ width: "4rem", height: "4rem", borderRadius: "9999px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem", background: "rgba(37,99,235,0.15)" }}>
                     <CheckCircle size={30} style={{ color: "#2563EB" }} />
                   </div>
-                  <h3 className="text-xl font-bold mb-3" style={{ fontFamily: "Manrope, sans-serif", color: "white" }}>¡Mensaje enviado!</h3>
+                  <h3 style={{ fontFamily: "Manrope, sans-serif", color: "white", fontSize: "1.25rem", fontWeight: 700, marginBottom: "0.75rem" }}>¡Mensaje enviado!</h3>
                   <p style={{ color: "#64748B" }}>Nos pondremos en contacto en menos de 24 horas hábiles.</p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate className="flex flex-col flex-1">
-                  <div className="grid sm:grid-cols-2 gap-5 mb-5">
-                    {field("nombre", "Nombre completo", "text", "Juan García")}
-                    {field("empresa", "Empresa", "text", "Empresa S.A.")}
+                <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+                    <Field id="nombre" label="Nombre completo" placeholder="Juan García" />
+                    <Field id="empresa" label="Empresa" placeholder="Empresa S.A." />
                   </div>
-                  <div className="grid sm:grid-cols-2 gap-5 mb-5">
-                    {field("email", "Email corporativo", "email", "juan@empresa.com")}
-                    {field("telefono", "Teléfono (opcional)", "tel", "+54 11 ...")}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+                    <Field id="email" label="Email corporativo" type="email" placeholder="juan@empresa.com" />
+                    <Field id="telefono" label="Teléfono" placeholder="+54 11 ..." optional />
                   </div>
 
-                  {/* Textarea — flex-1 para que tome el espacio restante */}
-                  <div className="mb-6 flex flex-col flex-1">
-                    <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "#64748B" }}>
+                  {/* Textarea */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <label style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#64748B" }}>
                       Mensaje <span style={{ color: "#2563EB" }}>*</span>
                     </label>
                     <textarea
                       value={form.mensaje}
                       onChange={(e) => setForm({ ...form, mensaje: e.target.value })}
+                      rows={5}
                       placeholder="Cuéntenos sobre su operación: tipo de carga, puerto, frecuencia estimada..."
-                      className="w-full px-4 py-3 rounded-lg text-sm outline-none transition-all duration-200 resize-none flex-1"
                       style={{
+                        ...inputStyle.base,
+                        ...(errors.mensaje ? inputStyle.error : {}),
+                        resize: "none",
                         minHeight: "140px",
-                        background: "rgba(255,255,255,0.05)",
-                        border: errors.mensaje ? "1px solid #EF4444" : "1px solid rgba(255,255,255,0.1)",
-                        color: "white",
                       }}
-                      onFocus={(e) => { if (!errors.mensaje) e.target.style.borderColor = "rgba(37, 99, 235, 0.6)"; }}
-                      onBlur={(e) => { if (!errors.mensaje) e.target.style.borderColor = "rgba(255,255,255,0.1)"; }}
+                      onFocus={(e) => {
+                        if (!errors.mensaje) e.target.style.borderColor = "rgba(37,99,235,0.6)";
+                        e.target.style.background = "rgba(255,255,255,0.08)";
+                      }}
+                      onBlur={(e) => {
+                        if (!errors.mensaje) e.target.style.borderColor = "rgba(255,255,255,0.1)";
+                        e.target.style.background = "rgba(255,255,255,0.05)";
+                      }}
                     />
-                    {errors.mensaje && <p className="text-xs mt-1" style={{ color: "#EF4444" }}>{errors.mensaje}</p>}
+                    {errors.mensaje && <p style={{ fontSize: "0.75rem", color: "#EF4444" }}>{errors.mensaje}</p>}
                   </div>
 
+                  {/* Submit */}
                   <button
                     type="submit"
                     disabled={loading}
-                    className="group w-full flex items-center justify-center gap-3 py-4 rounded-xl font-semibold text-base transition-all duration-300"
                     style={{
-                      background: loading ? "rgba(37, 99, 235, 0.5)" : "linear-gradient(135deg, #2563EB, #1D4ED8)",
-                      color: "white",
-                      boxShadow: loading ? "none" : "0 8px 25px rgba(37, 99, 235, 0.3)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.75rem",
+                      width: "100%",
+                      padding: "1.125rem 2rem",
+                      borderRadius: "0.75rem",
+                      fontWeight: 600,
+                      fontSize: "1rem",
+                      border: "none",
                       cursor: loading ? "not-allowed" : "pointer",
+                      background: loading ? "rgba(37,99,235,0.5)" : "linear-gradient(135deg, #2563EB, #1D4ED8)",
+                      color: "white",
+                      boxShadow: loading ? "none" : "0 8px 25px rgba(37,99,235,0.3)",
+                      transition: "all 0.3s ease",
                     }}
-                    onMouseEnter={(e) => { if (!loading) { (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 35px rgba(37, 99, 235, 0.45)"; } }}
-                    onMouseLeave={(e) => { if (!loading) { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 25px rgba(37, 99, 235, 0.3)"; } }}
+                    onMouseEnter={(e) => {
+                      if (!loading) {
+                        (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                        (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 35px rgba(37,99,235,0.45)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!loading) {
+                        (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                        (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 25px rgba(37,99,235,0.3)";
+                      }
+                    }}
                   >
                     {loading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                      <>
+                        <div style={{ width: "1rem", height: "1rem", borderRadius: "9999px", border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", animation: "spin 0.8s linear infinite" }} />
                         Enviando...
-                      </div>
+                      </>
                     ) : (
-                      <>Solicitar Cotización<Send size={15} className="transition-transform group-hover:translate-x-1" /></>
+                      <>Solicitar Cotización <Send size={15} /></>
                     )}
                   </button>
                 </form>
