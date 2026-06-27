@@ -144,5 +144,5 @@ Para conectar el dominio `logisen.com.ar`, agregar los siguientes registros DNS:
 
 ---
 
-*Desarrollado por [Sebastian](https://github.com/TU_USUARIO)*
+*Desarrollado por [Sebastian](https://github.com/sebastianr93)*
 # logisen-landing
